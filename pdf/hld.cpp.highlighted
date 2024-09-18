@@ -1,0 +1,71 @@
+<!-- Generator: GNU source-highlight 3.1.9
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><b><font color="#000080">#include</font></b> <font color="#FF0000">"../template.hpp"</font>
+
+<b><font color="#0000FF">const</font></b> <font color="#009900">int</font> N <font color="#990000">=</font> <font color="#993399">500</font><font color="#FF0000">'001;</font>
+
+<font color="#FF0000">int n;</font>
+<font color="#FF0000">vector&lt;int&gt; adj[N];</font>
+
+<font color="#FF0000">int sz[N], par[N], top[N], pre[N], czas;</font>
+
+<font color="#FF0000">void dfs(int u, int f) {</font>
+<font color="#FF0000">	sz[u] = 1;</font>
+<font color="#FF0000">	for (int &amp;v : adj[u]) if (v != f) {</font>
+<font color="#FF0000">		dfs(v, u);</font>
+<font color="#FF0000">		sz[u] += sz[v];</font>
+<font color="#FF0000">		if (sz[v] &gt; sz[adj[u][0]]) {</font>
+<font color="#FF0000">			swap(v, adj[u][0]);</font>
+<font color="#FF0000">		}</font>
+<font color="#FF0000">	}</font>
+<font color="#FF0000">}</font>
+
+<font color="#FF0000">void hld(int u, int f) {</font>
+<font color="#FF0000">	if (top[u] == 0) {</font>
+<font color="#FF0000">		top[u] = u;</font>
+<font color="#FF0000">	}</font>
+<font color="#FF0000">	if (adj[u].size()) {</font>
+<font color="#FF0000">		top[adj[u][0]] = top[u];</font>
+<font color="#FF0000">	}</font>
+<font color="#FF0000">	pre[u] = (++czas);</font>
+<font color="#FF0000">	for (int v : adj[u]) if (v != f) {</font>
+<font color="#FF0000">		hld(v, u);</font>
+<font color="#FF0000">	}</font>
+<font color="#FF0000">}</font>
+
+<font color="#FF0000">int lca(int u, int v) {</font>
+<font color="#FF0000">	while (top[u] != top[v]) {</font>
+<font color="#FF0000">		if (pre[u] &lt; pre[v]) {</font>
+<font color="#FF0000">			swap(u, v);</font>
+<font color="#FF0000">		}</font>
+<font color="#FF0000">		u = par[top[u]];</font>
+<font color="#FF0000">	}</font>
+<font color="#FF0000">	return (pre[u] &lt; pre[v] ? u : v);</font>
+<font color="#FF0000">}</font>
+
+<font color="#FF0000">vector&lt;pair&lt;int, int&gt;&gt; path_up(int u, int v) {</font>
+<font color="#FF0000">	vector&lt;pair&lt;int, int&gt;&gt; path;</font>
+<font color="#FF0000">	while (pre[u] != pre[v]) {</font>
+<font color="#FF0000">		path.emplace_back(pre[top[u]], pre[u]);</font>
+<font color="#FF0000">		u = par[top[u]];</font>
+<font color="#FF0000">	}</font>
+<font color="#FF0000">	if (u != v) {</font>
+<font color="#FF0000">		path.emplace_back(pre[v] + 1, pre[u]);</font>
+<font color="#FF0000">	}</font>
+<font color="#FF0000">	return path;</font>
+<font color="#FF0000">}</font>
+
+<font color="#FF0000">vector&lt;pair&lt;int, int&gt;&gt; get_path(int u, int v) {</font>
+<font color="#FF0000">	int w = lca(u, v);</font>
+<font color="#FF0000">	auto l = path_up(u, w);</font>
+<font color="#FF0000">	auto r = path_up(v, w);</font>
+<font color="#FF0000">	reverse(r.begin(), r.end());</font>
+<font color="#FF0000">	l.emplace_back(pre[w], pre[w]); // delete that for edge query</font>
+<font color="#FF0000">	for (auto [a, b] : r) {</font>
+<font color="#FF0000">		l.emplace_back(b, a);</font>
+<font color="#FF0000">	}</font>
+<font color="#FF0000">	return l;</font>
+<font color="#FF0000">}</font>
+</tt></pre>

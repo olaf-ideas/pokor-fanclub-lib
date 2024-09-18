@@ -1,0 +1,8 @@
+# Activation: source .pokorrc
+c() {
+	g++ $1.cpp -o $1 -std=c++20 -Wall -Wextra -Wshadow -Wconversion -Wno-sign-conversion -Wfloat-equal -D_GLIBCXX -fsanitize=address,undefined -ggdb3 -DDEBUG
+}
+nc() {
+	g++ $1.cpp -o $1 -std=c++20 -Ofast -mtune=native -march=native -static
+}
+
